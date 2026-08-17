@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<meta/>
+<meta/>
+<title>Lightning-Fast RAG on CPU</title>
+<meta/>
+
+<link href="https://angshulmajumdar.github.io/Sparse-Geometric-Rag/medium/" rel="canonical"/></head>
+<body>
+<article>
+<h1>Lightning-Fast RAG on CPU</h1>
+<p>No training, no learned embeddings, no neural retrieval—just extremely low-complexity retrieval delivering millisecond-scale search on ordinary hardware.</p>
+<p>Retrieval-augmented generation has become one of the most practical ways to make large language models useful with private or specialized information. But there is an oddity in the way we usually build RAG systems: before the language model can answer a question, we often introduce another substantial computational system simply to decide which documents the language model should read.</p>
+<p>Modern retrieval pipelines can involve learned embedding models, dense document vectors, neural query encoding, approximate nearest-neighbor search, specialized indexes, and sometimes considerable hardware. These techniques can deliver excellent retrieval quality. But they also raise a basic engineering question: does useful retrieval necessarily have to be this computationally expensive?</p>
+<p>I wanted to explore the opposite extreme. Suppose the retrieval layer were required to learn absolutely nothing: no training, no fine-tuning, no learned document embeddings, and no neural model evaluating each incoming query. At the same time, suppose the computation had to remain small enough to run comfortably on ordinary CPU hardware—and, eventually, on much smaller edge-class machines.</p>
+<p>That experiment became <strong>SparseGeometricRAG</strong>. Instead of learning how documents should be represented, it extracts structure directly from the corpus and turns retrieval into a small sequence of sparse operations. The result is not an accuracy-at-any-cost system. It is an attempt to push retrieval toward a very different corner of the design space: extremely low complexity, small state, and useful top-10 retrieval at millisecond-scale latency.</p>
+<p>The title is intentionally shorthand. The component being made lightning-fast here is the retrieval layer of RAG, not the language model that ultimately generates the answer.</p>
+<blockquote>The interesting question is therefore not simply “how fast is it?” It is: how much computation can we remove from retrieval before it stops being useful?</blockquote>
+<figure>
+<img alt="The central design choice: reduce the amount of expensive work in retrieval instead of accelerating a dense neural pipeline." src="https://angshulmajumdar.github.io/Sparse-Geometric-Rag/medium/figures/fig01_positioning.png" width="100%"/>
+<figcaption><strong>Figure 1.</strong> The central design choice: reduce the amount of expensive work in retrieval instead of accelerating a dense neural pipeline.</figcaption>
+</figure>
+<h2>Start by removing learning from retrieval</h2>
+<p>A dense retriever typically learns or inherits a representation space, maps every document into that space, maps the query into the same space, and then searches through the resulting vectors. Even when approximate search is efficient, the representation itself carries a cost: model inference, embedding storage, index construction, and the operational complexity of keeping the model and index synchronized.</p>
+<p><strong>SparseGeometricRAG</strong> starts elsewhere. It uses ordinary corpus statistics—primarily sparse TF-IDF structure—and constructs a compact geometric organization of the collection. There are no trained model weights in the retrieval path. There is no gradient descent. There is no embedding model to call for each query. The corpus is analyzed, organized, and indexed; the query then traverses that structure using cheap sparse operations.</p>
+<p>“Zero learning” does not mean “zero preprocessing.” Index construction still computes statistics and builds shared structures. The distinction is that the retriever does not fit a predictive model or learn a representation through training. That matters operationally: moving to a new domain does not require fine-tuning a retriever, regenerating neural embeddings because a model changed, or maintaining a query encoder in production.</p>
+<h2>The basic idea: coarse location plus a tiny local code</h2>
+<p>The easiest way to understand the index is to forget the mathematical terminology for a moment. Each chunk gets two pieces of geometric information. First, it is assigned to a handful of coarse regions of the sparse corpus space. Second, relative to each region, it keeps a tiny local directional code. The global structure is shared; the per-chunk geometric state stays small.</p>
+<p>In the frozen configuration used for the benchmark, each chunk keeps four fuzzy memberships. Each shared region keeps only 64 important coordinates, and each chunk-region membership retains just 16 signed residual positions. In other words, the local comparison is deliberately narrow. The system does not carry a full dense vector for every chunk simply because the corpus is large.</p>
+<figure>
+<img alt="A document keeps only a small amount of local state: a few coarse memberships and a tiny signed code. Most structure is shared." src="https://angshulmajumdar.github.io/Sparse-Geometric-Rag/medium/figures/fig04_representation_anatomy.png" width="100%"/>
+<figcaption><strong>Figure 2.</strong> A document keeps only a small amount of local state: a few coarse memberships and a tiny signed code. Most structure is shared.</figcaption>
+</figure>
+<p>The asymmetry between document and query representations is important. Document residual magnitudes are compressed aggressively; the database mainly keeps direction and reliability. The query remains sparse and real-valued, so it provides the fine-grained amplitudes at runtime. This is one of the places where the implementation saves both storage and arithmetic.</p>
+<h2>Indexing happens once; expensive work is not repeated per query</h2>
+<p>Offline, the corpus is tokenized into sparse TF-IDF form. Chunks are routed to their strongest coarse regions. A sparse center is built for each region, and the chunk’s local deviation from that center is compressed to a signed code. A bounded sparse term graph is also constructed to provide a small amount of second-order routing support. None of this requires a neural model.</p>
+<figure>
+<img alt="Indexing is performed once. Corpus statistics, shared regions, sparse centers, and compact local codes are precomputed before queries arrive." src="https://angshulmajumdar.github.io/Sparse-Geometric-Rag/medium/figures/fig02_offline_indexing.png" width="100%"/>
+<figcaption><strong>Figure 3.</strong> Indexing is performed once. Corpus statistics, shared regions, sparse centers, and compact local codes are precomputed before queries arrive.</figcaption>
+</figure>
+<p>This indexing phase is where the system earns its low query-time cost. The retrieval path does not rediscover corpus structure for every request. It simply uses the precomputed branch postings, membership weights, sparse support, and local codes.</p>
+<h2>At query time, computation is spent only after the search space collapses</h2>
+<p>The query-time pipeline is intentionally staged. A query becomes a sparse TF-IDF vector. A weak, bounded expansion is used only to improve routing. The query touches a small set of branch postings, producing candidate memberships. Each routed candidate is then scored using only the retained 16-coordinate local code.</p>
+<p>After that comes document-level aggregation and a cheap lexical pre-score. Only a small shortlist survives to the richer final evidence calculation. The frozen large-route configuration uses a shortlist of 100 candidates and then returns the top 10 chunks for RAG.</p>
+<figure>
+<img alt="The query path is staged: sparse routing first, fixed-width local scoring next, then a small shortlist and final top-10 selection." src="https://angshulmajumdar.github.io/Sparse-Geometric-Rag/medium/figures/fig03_querytime_retrieval.png" width="100%"/>
+<figcaption><strong>Figure 4.</strong> The query path is staged: sparse routing first, fixed-width local scoring next, then a small shortlist and final top-10 selection.</figcaption>
+</figure>
+<p>This sequencing is more important than any single formula. Many retrieval systems perform a relatively expensive representation or similarity computation over a large candidate space and then optimize that operation. Here, the architecture is designed so that expensive operations are simply not permitted to run until the active set is small.</p>
+<h2>Why the complexity stays low</h2>
+<p>Let C be the number of routed chunk-region hits for a query. The local geometric score is O(16C) in the frozen design because the residual support is fixed at 16. Posting traversal is linear in the hits that are actually visited. The shortlist stage then reduces the active set before richer lexical and support features are computed.</p>
+<p>The important engineering consequence is that corpus size does not automatically imply corpus-wide expensive scoring. Large collections increase the amount of index state and can increase routing traffic, but the architecture still funnels work through progressively smaller sets.</p>
+<figure>
+<img alt="The computation funnel. More detailed scoring is deliberately delayed until the candidate set has already collapsed." src="https://angshulmajumdar.github.io/Sparse-Geometric-Rag/medium/figures/fig05_computation_funnel.png" width="100%"/>
+<figcaption><strong>Figure 5.</strong> The computation funnel. More detailed scoring is deliberately delayed until the candidate set has already collapsed.</figcaption>
+</figure>
+<p>The storage story is similar. With four memberships and 16 residual positions per membership, the chunk-local geometric layer has a fixed structural width. Branch centers and sparse graph structure are shared. Whole-chunk lexical support is stored sparsely. There is no requirement for an N × d dense document matrix whose width is dictated by an embedding model.</p>
+<p>A later optimization branch in the repository also replaces sort-based candidate deduplication by stamp-based O(C) aggregation and introduces a gate before whole-chunk lexical scanning. Those optimizations were developed after the frozen benchmark and are kept separate so that the published benchmark row is not silently altered.</p>
+<figure>
+<img alt="Shared state versus per-document state. Keeping document-local state small is a major reason memory and compute requirements remain modest." src="https://angshulmajumdar.github.io/Sparse-Geometric-Rag/medium/figures/fig09_shared_state.png?v=3" width="100%"/>
+<figcaption><strong>Figure 6.</strong> Shared state versus per-document state. Keeping document-local state small is a major reason memory and compute requirements remain modest.</figcaption>
+</figure>
+<h2>What happened on real retrieval benchmarks?</h2>
+<p>A lightweight retriever is only interesting if it still retrieves useful material. I therefore tested the frozen 100-to-10 configuration across six standard datasets spanning very different retrieval regimes: SciFact, TREC-COVID, Quora, the full 8.84-million-passage MS MARCO collection evaluated with TREC-DL19 queries, HotpotQA, and Natural Questions.</p>
+<table><tr><th scope="col">Dataset</th><th scope="col">nDCG@10</th><th scope="col">MRR@10</th><th scope="col">Recall@10</th><th scope="col">Hit@10</th><th scope="col">Median ms</th><th scope="col">p95 ms</th></tr><tr><th scope="row">SciFact</th><td>0.5685</td><td>0.5452</td><td>0.6663</td><td>0.6833</td><td>0.947</td><td>1.031</td></tr><tr><th scope="row">TREC-COVID</th><td>0.5990</td><td>0.8252</td><td>0.0163</td><td>1.0000</td><td>1.051</td><td>1.193</td></tr><tr><th scope="row">Quora</th><td>0.7366</td><td>0.7287</td><td>0.8407</td><td>0.8904</td><td>120.301</td><td>175.494</td></tr><tr><th scope="row">MS MARCO / DL19</th><td>0.3400</td><td>0.5189</td><td>0.0916</td><td>0.7209</td><td>65.195</td><td>142.647</td></tr><tr><th scope="row">HotpotQA</th><td>0.4670</td><td>0.6255</td><td>0.4820</td><td>0.7507</td><td>28.944</td><td>42.568</td></tr><tr><th scope="row">NQ</th><td>0.2579</td><td>0.2262</td><td>0.3983</td><td>0.4342</td><td>33.686</td><td>44.161</td></tr></table>
+<p><strong>Table 1.</strong> Frozen SparseGeometricRAG results. Latency is the measured retrieval path used by the reported experiment, not merely an ANN-search microbenchmark.</p>
+<figure>
+<img alt="Frozen six-dataset results. The point is the effectiveness-versus-cost operating point, not a claim of best-in-class retrieval accuracy." src="https://angshulmajumdar.github.io/Sparse-Geometric-Rag/medium/figures/fig08_frozen_results.png" width="100%"/>
+<figcaption><strong>Figure 7.</strong> Frozen six-dataset results. The point is the effectiveness-versus-cost operating point, not a claim of best-in-class retrieval accuracy.</figcaption>
+</figure>
+<p>The headline numbers are the latency figures. On SciFact and TREC-COVID, median query latency is about one millisecond. HotpotQA is about 29 ms and Natural Questions about 34 ms. The TREC-DL19 evaluation over the full 8.84-million-passage MS MARCO corpus has a median of about 65 ms. Quora is slower in this implementation at about 120 ms, which is useful evidence that route structure and candidate behavior still matter.</p>
+<p>The quality story needs to be stated just as plainly: the strongest neural retrievers are generally better on pure effectiveness. Modern ColBERT, BGE, SPLADE++, and other learned systems often achieve higher nDCG or recall. <strong>SparseGeometricRAG</strong> is not claiming otherwise. The point is that the useful-retrieval region extends much farther into the low-compute corner than I expected.</p>
+<table><tr><th scope="col">nDCG@10</th><th scope="col">SciFact</th><th scope="col">TREC-COVID</th><th scope="col">Quora</th><th scope="col">MS MARCO / DL19</th><th scope="col">HotpotQA</th><th scope="col">NQ</th></tr><tr><th scope="row">BM25</th><td>0.6650</td><td>0.6560</td><td>0.7890</td><td>0.2280</td><td>0.6030</td><td>0.3290</td></tr><tr><th scope="row">BGE-base + Flat</th><td>0.7404</td><td>0.7807</td><td>0.8890</td><td>0.4135</td><td>0.7260</td><td>0.5415</td></tr><tr><th scope="row">Modern ColBERT</th><td>0.7645</td><td>0.8341</td><td>0.8754</td><td>0.4499</td><td>0.7667</td><td>0.6169</td></tr><tr><th scope="row">SparseGeometricRAG</th><td>0.5685</td><td>0.5990</td><td>0.7366</td><td>0.3400</td><td>0.4670</td><td>0.2579</td></tr></table>
+<p><strong>Table 2.</strong> Selected nDCG@10 effectiveness references. These values show the quality side of the tradeoff; they are not a controlled hardware-speed leaderboard.</p>
+<p>One result I particularly like is that the full MS MARCO/DL19 run is not a toy-scale demonstration. The index is operating over 8.84 million passages. That is large enough to expose whether the architecture is fundamentally dependent on tiny academic collections. The measured latency remains in the tens of milliseconds on CPU.</p>
+<h2>The shortlist is a systems parameter, not a sacred constant</h2>
+<p>The experiments also reinforced a practical point about RAG: the retriever does not need to optimize an abstract deep-recall objective if the generator will only consume ten chunks. The shortlist size P controls how much evidence is allowed into the final reranking stage. On a large route, P = 100 worked well as a useful denoiser; on a tiny route, aggressive pruning can be unnecessary.</p>
+<figure>
+<img alt="Shortlist size is a deployment parameter. The retriever can trade a little more candidate work for more recall where the application needs it." src="https://angshulmajumdar.github.io/Sparse-Geometric-Rag/medium/figures/fig07_shortlist_sweep.png" width="100%"/>
+<figcaption><strong>Figure 8.</strong> Shortlist size is a deployment parameter. The retriever can trade a little more candidate work for more recall where the application needs it.</figcaption>
+</figure>
+<p>This is one reason I prefer to think of the system as a RAG retriever rather than a generic search engine. The final objective is not to return hundreds or thousands of candidates. It is to give a generator a small, useful set of chunks with predictable computational cost.</p>
+<h2>Why ordinary and edge hardware become realistic</h2>
+<p>Once the retrieval path is mostly sparse lookup, bounded local scoring, candidate accumulation, and a small final rerank, the hardware story changes naturally. A large accelerator is no longer a prerequisite for the retriever. On a workstation or server, the retrieval layer can stay on CPU while accelerator memory is reserved for the generator. On smaller deployments, the same low-compute design becomes interesting for edge-class hardware.</p>
+<p>I have not benchmarked the current release on Raspberry Pi-class hardware, so I do not want to pretend that result already exists. But the direction is straightforward to test: the algorithm was designed around small sparse state and fixed-width local operations rather than dense matrix multiplication. That makes an edge implementation a sensible engineering next step rather than a completely different research problem.</p>
+<figure>
+<img alt="A lightweight retrieval path makes ordinary CPUs and edge-class hardware realistic deployment targets." src="https://angshulmajumdar.github.io/Sparse-Geometric-Rag/medium/figures/fig06_low_cost_deployment.png" width="100%"/>
+<figcaption><strong>Figure 9.</strong> A lightweight retrieval path makes ordinary CPUs and edge-class hardware realistic deployment targets.</figcaption>
+</figure>
+<h2>What this approach does not claim</h2>
+<p>There are three claims I would avoid making. First, this is not the most accurate retriever on every benchmark. Second, “no learning” does not mean “no indexing cost”; corpus statistics and shared structures still have to be built. Third, the latency values should not be mixed casually with search-only ANN latency reported on different hardware after a query embedding already exists.</p>
+<p>The repository therefore keeps a benchmark ledger and separates incompatible timing protocols rather than filling every missing cell with a number from somewhere else. In retrieval, speed claims are only meaningful when we know what was timed.</p>
+<h2>Why I think this is useful</h2>
+<p>The broader lesson is less about this particular implementation than about system design. We often inherit an expensive representation and then devote enormous effort to accelerating it. Sometimes the more productive question is whether the representation can be changed so that the expensive operation disappears.</p>
+<p><strong>SparseGeometricRAG</strong> is one attempt at that. It replaces a learned retrieval representation with corpus-derived sparse structure, compresses document-local geometry aggressively, and refuses to spend rich computation until the candidate set has already collapsed. The resulting system gives up some retrieval effectiveness compared with the strongest neural methods, but in return it reaches a hardware and latency regime that is attractive for low-cost RAG deployments.</p>
+<p>For practitioners, that tradeoff can be more important than another small gain on a leaderboard. If the retrieval layer can be simple, fast, reproducible, and deployable on the hardware you already have, the entire RAG stack becomes easier to own.</p>
+<blockquote>The real speedup comes from avoiding expensive work, not accelerating it.</blockquote>
+<h2>Try it</h2>
+<p>The implementation, frozen configurations, experiments, benchmark artifacts, and reproducibility notes are public. The repository includes the full six-dataset benchmark suite rather than only the favorable rows, together with the post-benchmark optimization branch kept separate from the frozen results.</p>
+<p><strong>Hugging Face repository:</strong> <a href="https://huggingface.co/datasets/Angshul/SparseGeometricRAG">Angshul/SparseGeometricRAG</a></p>
+<figure>
+<img alt="The public repository contains the implementation, frozen configurations, experiments, benchmark artifacts, tests, and reproducibility material." src="https://angshulmajumdar.github.io/Sparse-Geometric-Rag/medium/figures/fig10_repository_map.png?v=3" width="100%"/>
+<figcaption><strong>Figure 10.</strong> The public repository contains the implementation, frozen configurations, experiments, benchmark artifacts, tests, and reproducibility material.</figcaption>
+</figure>
+<p>The most useful next test is not another synthetic benchmark. It is to run the same retriever on different CPUs and edge-class machines, measure where the memory and routing bottlenecks move, and see how much of the current latency survives when the hardware budget becomes genuinely small.</p>
+<p>Benchmark values and figures are drawn from the frozen SparseGeometricRAG public release and its benchmark ledger.</p>
+</article>
+</body>
+</html>
