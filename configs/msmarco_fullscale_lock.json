@@ -1,0 +1,25 @@
+{
+  "protocol": "Final architecture lock after five disjoint 1000-query TRAIN folds. A parameter change is accepted only when it improves nDCG@10 on all five folds; DEV and TEST are not used for this final lock.",
+  "frozen_params": {
+    "preselection_eta": 1.0,
+    "preselection_idf_power": 1.0,
+    "P": 2000,
+    "gamma_tail": 0.25,
+    "lambda_M": 0.125,
+    "final_idf_power": 2.0,
+    "final_length_b": 0.1,
+    "coordination_alpha": 0.25,
+    "lambda_lex": 4.0,
+    "lambda_sem": 0.3,
+    "rare_topk": 3,
+    "rare_coverage_weight": 1.0,
+    "h": 0,
+    "S": 16
+  },
+  "remaining_train_sweeps": {
+    "length_coordination": "No change. Current b=0.1, alpha=0.25 had the highest five-fold mean nDCG@10 (0.1616578464).",
+    "final_weights": "No change. w_sem=0.5 increased mean by 0.00024547 but improved only 3/5 folds and had worst-fold delta -0.00036559; rejected.",
+    "rare_weight": "No change. top3 weight 1.25 increased mean by 0.00017519 but improved only 3/5 folds and had worst-fold delta -0.00024270; rejected."
+  },
+  "test_policy": "test.tsv evaluated once after this lock; no post-test tuning."
+}

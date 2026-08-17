@@ -1,0 +1,96 @@
+{
+  "dataset": "TREC Deep Learning 2019 Passage / MS MARCO v1 passage corpus",
+  "corpus_size": 8841823,
+  "queries": 43,
+  "ours": {
+    "source": "local frozen implementation; TRAIN-fold selected parameters; no post-test tuning",
+    "ndcg10_trec_eval_linear_gain": 0.35912864519537124,
+    "mrr10_binary_rel_ge_2": 0.5196382428940569,
+    "p10_binary_rel_ge_2": 0.28837209302325584,
+    "r100_binary_rel_ge_2": 0.32448471642019855,
+    "r1000_binary_rel_ge_2": 0.5097617112453317,
+    "route_recall_macro_binary_rel_ge_2": 0.7011717028045845,
+    "pool2000_recall_macro_binary_rel_ge_2": 0.5414967376369709,
+    "median_ms_local_warm": 86.52526099831448,
+    "p95_ms_local_warm": 163.08966510223397,
+    "avg_routed_docs": 86049.18604651163,
+    "deployable_index_bytes": 2629229405
+  },
+  "local_same_tokenizer_bm25_sanity": {
+    "note": "Effectiveness-only streaming full-corpus scan; NOT an indexed query-latency measurement. Lowercase regex tokenizer, no stemming, k1=.9 b=.4.",
+    "ndcg10_trec_eval_linear_gain": 0.4845300219597866,
+    "mrr10_binary_rel_ge_2": 0.6200535252860835,
+    "p10_binary_rel_ge_2": 0.38372093023255816,
+    "r100_binary_rel_ge_2": 0.465414572538343,
+    "full_corpus_parallel_scan_seconds": 321.1634156703949
+  },
+  "published_same_test": [
+    {
+      "method": "BM25 default",
+      "index": "Lucene/Anserini sparse",
+      "ndcg10": 0.5058,
+      "r1000": 0.7501,
+      "p10": 0.4116,
+      "rr_nist": 0.7036
+    },
+    {
+      "method": "BM25 + RM3",
+      "index": "Lucene/Anserini sparse",
+      "ndcg10": 0.518,
+      "r1000": 0.7998,
+      "p10": 0.4372,
+      "rr_nist": 0.6683
+    },
+    {
+      "method": "BM25 + PRF default",
+      "index": "traditional sparse",
+      "ndcg10": 0.5372
+    },
+    {
+      "method": "BM25 + PRF tuned",
+      "index": "traditional sparse",
+      "ndcg10": 0.5536
+    },
+    {
+      "method": "ANCE",
+      "index": "FAISS Flat",
+      "ndcg10": 0.6452,
+      "r1000": 0.7554
+    },
+    {
+      "method": "BGE-base-en-v1.5",
+      "index": "FAISS Flat float32",
+      "ndcg10": 0.7016,
+      "r1000": 0.8427
+    },
+    {
+      "method": "BGE-base-en-v1.5",
+      "index": "Lucene HNSW",
+      "ndcg10": 0.7016,
+      "r1000": 0.8441
+    },
+    {
+      "method": "BGE-base-en-v1.5",
+      "index": "Lucene HNSW int8",
+      "ndcg10": 0.7017,
+      "r1000": 0.8436
+    },
+    {
+      "method": "TCT-ColBERT-V2-HN+",
+      "index": "FAISS Flat",
+      "ndcg10": 0.7204,
+      "r1000": 0.8261
+    },
+    {
+      "method": "OPQIVFPQ SiamBERT",
+      "index": "FAISS OPQ-IVF-PQ, 256 B/doc",
+      "ndcg10": 0.613,
+      "r1000": 0.675,
+      "note": "different encoder; not apples-to-apples with BGE"
+    }
+  ],
+  "metric_notes": {
+    "ndcg": "trec_eval ndcg_cut uses raw qrel grade as gain; official TREC-DL19 comparison uses graded judgments.",
+    "binary": "NIST passage grade 1 is Related but NOT relevant; binary metrics use grades >=2."
+  }
+}

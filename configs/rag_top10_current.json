@@ -1,0 +1,47 @@
+{
+  "representation": {
+    "F": 4,
+    "B": 64,
+    "S": 16,
+    "L": 12,
+    "tau": 20,
+    "beta": -0.2
+  },
+  "routing": {
+    "gamma_tail": 0.25,
+    "lambda_membership": 0.125
+  },
+  "early_rescue": {
+    "idf_power": 1.0,
+    "length_b": 0.2
+  },
+  "final_chunk_score": {
+    "idf_power": 2.0,
+    "length_b": 0.1,
+    "coordination_alpha": 0.25,
+    "lambda_lex": 4.0,
+    "lambda_sem": 0.3,
+    "rare_topk": 3,
+    "rare_weight": 1.0,
+    "semantic_k": 16
+  },
+  "top10_set_selection": {
+    "branch_quality_top_docs": 3,
+    "eligible_high_quality_branches": 10,
+    "lambda_diversity": 0.1,
+    "rank1_pure_relevance": true,
+    "repeated_branches_allowed": true
+  },
+  "rag_pool": {
+    "tested": [
+      25,
+      50,
+      100,
+      200,
+      500,
+      2000
+    ],
+    "large_route_provisional": 100,
+    "note": "Pool size is a RAG top-10 handle, not a deep-recall constant. Small-route corpora may prefer no additional pruning."
+  }
+}
