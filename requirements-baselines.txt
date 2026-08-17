@@ -1,0 +1,5 @@
+faiss-cpu>=1.8
+hnswlib>=0.8
+sentence-transformers>=3.0
+transformers>=4.45
+torch>=2.2
