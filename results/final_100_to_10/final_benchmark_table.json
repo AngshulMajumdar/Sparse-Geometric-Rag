@@ -1,0 +1,74 @@
+{
+  "protocol": "Frozen P=100 geometric shortlist -> top-10 RAG ranking (HQ10 soft branch diversity lambda_D=0.1 where applicable).",
+  "datasets": [
+    "SciFact",
+    "TREC-COVID",
+    "Quora",
+    "MS MARCO / DL19",
+    "HotpotQA",
+    "NQ"
+  ],
+  "OURS_CPU_100_to_10": {
+    "nDCG@10": [
+      0.5685,
+      0.599,
+      0.7366,
+      0.34,
+      0.467,
+      0.2579
+    ],
+    "MRR@10": [
+      0.5452,
+      0.8252,
+      0.7287,
+      0.5189,
+      0.6255,
+      0.2262
+    ],
+    "P@10": [
+      0.0737,
+      0.652,
+      0.1124,
+      0.2674,
+      0.0964,
+      0.0462
+    ],
+    "R@10": [
+      0.6663,
+      0.0163,
+      0.8407,
+      0.0916,
+      0.482,
+      0.3983
+    ],
+    "Hit@10": [
+      0.6833,
+      1.0,
+      0.8904,
+      0.7209,
+      0.7507,
+      0.4342
+    ],
+    "median_ms": [
+      0.947,
+      1.051,
+      120.301,
+      65.195,
+      28.944,
+      33.686
+    ],
+    "p95_ms": [
+      1.031,
+      1.193,
+      175.494,
+      142.647,
+      42.568,
+      44.161
+    ]
+  },
+  "notes": [
+    "The six-dataset benchmark row is the frozen 100->10 operating point.",
+    "The postbenchmark final_two_optimizations branch is preserved separately because it changes some NQ/Hotpot values and is not the source of the frozen table.",
+    "MS MARCO / DL19 is the 43-query TREC-DL19 run over the full 8.84M-passage corpus."
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "protocol": "h=0 selected on deterministic 1000-query TRAIN validation sweep; full 6980-query DEV untouched",
+  "best_h": 0,
+  "dev_metrics": {
+    "nDCG@10": 0.16601912415048203,
+    "MRR@10": 0.13446877700459361,
+    "P@10": 0.02851002865329513,
+    "R@10": 0.2734718242597899,
+    "R@100": 0.4745702005730659,
+    "Hit@10": 0.2800859598853868,
+    "Hit@100": 0.4848137535816619,
+    "n_queries": 6980
+  },
+  "timing": {
+    "median_ms": 31.329864999861456,
+    "p95_ms": 79.1605076500673,
+    "mean_ms": 37.54520276890687,
+    "qps": 26.63456117563312,
+    "avg_candidate_docs": 95890.32464183381,
+    "median_candidate_docs": 77277.5,
+    "avg_candidate_memberships": 103003.0223495702
+  },
+  "stage_diagnostics": {
+    "routed_relevant_recall": 0.8192819685356999,
+    "pool_P2000_relevant_recall": 0.6075030254134732,
+    "final_R100": 0.4745702005730659,
+    "total_positive_qrels": 7437
+  },
+  "index_meta": {
+    "N": 8841823,
+    "M": 50000,
+    "F": 4,
+    "S": 16,
+    "avg_doc_length": 54.516098546645864,
+    "build_seconds_resume": 11.759559392929077,
+    "geometry": "geometry_1m_fullcorpus_vocab"
+  },
+  "geometry_note": "full 8.84M vocabulary/IDF; geometric codebook calibrated on first 1M passages",
+  "physical_optimizations": "branch-sorted postings; query-local dense center/reliability lookup; global compact support CSR; ranking verified identical on regression queries"
+}

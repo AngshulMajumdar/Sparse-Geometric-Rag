@@ -1,0 +1,36 @@
+{
+  "protocol": "semantic-coordination rule locked on deterministic 1000 TRAIN validation; untouched full DEV",
+  "params": {
+    "preselection_eta": 1.0,
+    "preselection_length_b": 0.2,
+    "P": 2000,
+    "gamma_tail": 0.25,
+    "lambda_M": 0.125,
+    "final_length_b": 0.1,
+    "lex_coord_alpha": 0.25,
+    "lambda_lex": 4.0,
+    "sem_coord_alpha": 0.5,
+    "lambda_sem_coord": 1.0,
+    "h": 0,
+    "S": 16
+  },
+  "dev_metrics": {
+    "nDCG@10": 0.17477520692258444,
+    "MRR@10": 0.1406771615045254,
+    "P@10": 0.030214899713467046,
+    "R@10": 0.29124880611270293,
+    "R@100": 0.49829274116523403,
+    "Hit@10": 0.297134670487106,
+    "Hit@100": 0.5084527220630373,
+    "n_queries": 6980
+  },
+  "route_relevant_recall": 0.8218993812214151,
+  "pool_relevant_recall": 0.7058111380145279,
+  "timing": {
+    "median_ms": 39.55150600086199,
+    "p95_ms": 97.43465015235415,
+    "mean_ms": 47.54249557162124,
+    "qps": 21.033813811761988,
+    "avg_candidate_docs": 95025.36577325498
+  }
+}

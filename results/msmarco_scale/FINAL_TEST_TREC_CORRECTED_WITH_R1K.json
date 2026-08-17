@@ -1,0 +1,45 @@
+{
+  "protocol": "FINAL TEST ONCE after TRAIN-only five-fold lock; no test tuning",
+  "frozen_params": {
+    "preselection_eta": 1.0,
+    "preselection_idf_power": 1.0,
+    "P": 2000,
+    "gamma_tail": 0.25,
+    "lambda_M": 0.125,
+    "final_idf_power": 2.0,
+    "final_length_b": 0.1,
+    "coordination_alpha": 0.25,
+    "lambda_lex": 4.0,
+    "lambda_sem": 0.3,
+    "rare_topk": 3,
+    "rare_coverage_weight": 1.0,
+    "h": 0,
+    "S": 16
+  },
+  "test_metrics": {
+    "nDCG@10": 0.35912864519537124,
+    "nDCG@10_expGain_diag": 0.2966994153329123,
+    "MRR@10": 0.5196382428940569,
+    "P@10": 0.28837209302325584,
+    "R@10": 0.09572825434452521,
+    "R@100": 0.32448471642019855,
+    "R@1000": 0.5097617112453317,
+    "Hit@10": 0.7441860465116279,
+    "Hit@100": 0.813953488372093,
+    "Hit@1000": 0.813953488372093,
+    "n_queries": 43
+  },
+  "route_relevant_recall_micro": 0.7397041183526589,
+  "pool_relevant_recall_micro": 0.5465813674530188,
+  "route_relevant_recall_macro": 0.7011717028045845,
+  "pool_relevant_recall_macro": 0.5414967376369709,
+  "timing": {
+    "median_ms": 86.52526099831448,
+    "p95_ms": 163.08966510223397,
+    "mean_ms": 86.17754579067561,
+    "qps": 11.603950783525327,
+    "avg_candidate_docs": 86049.18604651163
+  },
+  "n_positive_judgments": 2501,
+  "note": "nDCG@10 uses linear graded gain, matching trec_eval/BEIR convention; exponential-gain value retained only as diagnostic."
+}

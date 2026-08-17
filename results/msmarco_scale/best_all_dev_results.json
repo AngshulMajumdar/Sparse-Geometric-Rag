@@ -1,0 +1,31 @@
+{
+  "protocol": "all params locked from TRAIN validation: gamma_tail=.25 lambda_M=.125 h=0 lambda_lex=4 lambda_sem=.1 P=2000; full DEV untouched",
+  "params": {
+    "gamma_tail": 0.25,
+    "lambda_M": 0.125,
+    "h": 0,
+    "lambda_lex": 4.0,
+    "lambda_sem": 0.1,
+    "P": 2000,
+    "S": 16
+  },
+  "dev_metrics": {
+    "nDCG@10": 0.1739954271312252,
+    "MRR@10": 0.14028738572793015,
+    "P@10": 0.030042979942693407,
+    "R@10": 0.2885267430754537,
+    "R@100": 0.4929918815663801,
+    "Hit@10": 0.29498567335243553,
+    "Hit@100": 0.5032951289398281,
+    "n_queries": 6980
+  },
+  "route_relevant_recall": 0.8215678364932096,
+  "pool_relevant_recall": 0.653892698668818,
+  "timing": {
+    "median_ms": 30.092392500591814,
+    "p95_ms": 70.51122249995373,
+    "mean_ms": 36.051276651003846,
+    "qps": 27.738268735405658,
+    "avg_candidate_docs": 95025.36577325498
+  }
+}

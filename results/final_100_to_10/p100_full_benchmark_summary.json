@@ -1,0 +1,113 @@
+{
+  "experiment": "P=100 retrieved geometric representations/chunks; all other current architecture parameters fixed (IDF^2, top-10 high-quality branches, lambda_D=0.1)",
+  "metrics_focus": [
+    "nDCG@10",
+    "MRR@10",
+    "P@10",
+    "R@10",
+    "Hit@10"
+  ],
+  "TREC-COVID": {
+    "baselines": {
+      "Exact TF-IDF": {
+        "nDCG@10": 0.3738,
+        "MRR@10": 0.5915,
+        "P@10": 0.402,
+        "R@10": 0.01053
+      },
+      "BM25 local": {
+        "nDCG@10": 0.5743,
+        "MRR@10": 0.7593,
+        "P@10": 0.636,
+        "R@10": 0.01576
+      },
+      "Contriever + FAISS": {
+        "nDCG@10": 0.596
+      },
+      "SPLADE++": {
+        "nDCG@10": 0.727
+      },
+      "BGE-base + FAISS Flat": {
+        "nDCG@10": 0.781
+      },
+      "Modern ColBERT": {
+        "nDCG@10": 0.834,
+        "MRR@10": 0.953,
+        "P@10": 0.882
+      },
+      "Previous OURS": {
+        "nDCG@10": 0.502,
+        "MRR@10": 0.744,
+        "P@10": 0.538,
+        "R@10": 0.01345
+      },
+      "Current OURS P=2000 HQ-div": {
+        "nDCG@10": 0.553081,
+        "MRR@10": 0.777222,
+        "P@10": 0.608,
+        "R@10": 0.0154371
+      },
+      "Current OURS P=100 HQ-div": {
+        "nDCG@10": 0.598958,
+        "MRR@10": 0.82519,
+        "P@10": 0.652,
+        "R@10": 0.016279,
+        "Hit@10": 1.0
+      }
+    }
+  },
+  "SciFact": {
+    "baselines": {
+      "Exact TF-IDF": {
+        "nDCG@10": 0.578,
+        "MRR@10": 0.5437,
+        "P@10": 0.0797,
+        "R@10": 0.7135
+      },
+      "BM25": {
+        "nDCG@10": 0.6623,
+        "MRR@10": 0.6293,
+        "P@10": 0.0863,
+        "R@10": 0.7809
+      },
+      "MiniLM + exact FAISS": {
+        "nDCG@10": 0.6451,
+        "MRR@10": 0.611
+      },
+      "Contriever-MS MARCO": {
+        "nDCG@10": 0.677
+      },
+      "SPLADE++": {
+        "nDCG@10": 0.704
+      },
+      "BGE-base + FAISS": {
+        "nDCG@10": 0.741
+      },
+      "Modern ColBERT": {
+        "nDCG@10": 0.764,
+        "MRR@10": 0.739,
+        "P@10": 0.098,
+        "R@10": 0.865
+      },
+      "Previous OURS": {
+        "nDCG@10": 0.425,
+        "MRR@10": 0.406,
+        "P@10": 0.056,
+        "R@10": 0.506
+      },
+      "Current OURS all routed (~157 avg)": {
+        "nDCG@10": 0.589315,
+        "MRR@10": 0.560915,
+        "P@10": 0.077667,
+        "R@10": 0.700333
+      },
+      "Current OURS P=100 HQ-div": {
+        "nDCG@10": 0.568515,
+        "MRR@10": 0.545151,
+        "P@10": 0.073667,
+        "R@10": 0.666333,
+        "Hit@10": 0.683333
+      }
+    }
+  }
+}

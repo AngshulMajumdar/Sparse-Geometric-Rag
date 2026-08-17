@@ -1,0 +1,44 @@
+{
+  "dataset": "TREC-COVID",
+  "P": 200,
+  "branch_quality": "mean top-3 E_dj among P pool docs; E_dj=m_dj*rho_q(j)*L_dj*C_dj^gamma",
+  "selection": "top-10 branches by H_j; soft document diversity lambda_D=0.1; IDF^2 final lexical term",
+  "timing": {
+    "prepare_median_ms": 105.85593599989807,
+    "prepare_p95_ms": 166.4733424499218
+  },
+  "variants": {
+    "current_z": {
+      "P@10": 0.62,
+      "R@10": 0.01550000428147683,
+      "Hit@10": 1.0,
+      "P@100": 0.44220000000000004,
+      "R@100": 0.10208106167428445,
+      "Hit@100": 1.0,
+      "MRR@10": 0.7583571428571428,
+      "nDCG@10": 0.559051991390963,
+      "n_queries": 50.0,
+      "route_recall_micro": 0.5703805779597131,
+      "pool_recall_micro": 0.1264945486969562,
+      "avg_candidates": 17575.12,
+      "rank_median_ms": 0.006080000048314105,
+      "rank_p95_ms": 0.00796295005329739
+    },
+    "hq10_softdoc_l0.1": {
+      "P@10": 0.608,
+      "R@10": 0.015336707307046284,
+      "Hit@10": 1.0,
+      "P@100": 0.44220000000000004,
+      "R@100": 0.10208106167428445,
+      "Hit@100": 1.0,
+      "MRR@10": 0.7631666666666667,
+      "nDCG@10": 0.5514777375610368,
+      "n_queries": 50.0,
+      "route_recall_micro": 0.5703805779597131,
+      "pool_recall_micro": 0.1264945486969562,
+      "avg_candidates": 17575.12,
+      "rank_median_ms": 1.5264525000020512,
+      "rank_p95_ms": 1.6499816999612449
+    }
+  }
+}

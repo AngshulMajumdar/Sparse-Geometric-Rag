@@ -1,0 +1,38 @@
+{
+  "protocol": "IDF^2 + top-3 rare-query-term coverage selected on five disjoint 1000-query TRAIN folds; untouched full DEV",
+  "params": {
+    "preselection_eta": 1.0,
+    "preselection_idf_power": 1.0,
+    "P": 2000,
+    "gamma_tail": 0.25,
+    "lambda_M": 0.125,
+    "final_idf_power": 2.0,
+    "final_length_b": 0.1,
+    "coordination_alpha": 0.25,
+    "lambda_lex": 4.0,
+    "lambda_sem": 0.3,
+    "rare_topk": 3,
+    "rare_coverage_weight": 1.0,
+    "h": 0,
+    "S": 16
+  },
+  "dev_metrics": {
+    "nDCG@10": 0.18178880695421318,
+    "MRR@10": 0.14661083822258608,
+    "P@10": 0.03136103151862464,
+    "R@10": 0.30142072588347657,
+    "R@100": 0.5188753581661891,
+    "Hit@10": 0.30816618911174787,
+    "Hit@100": 0.5290830945558739,
+    "n_queries": 6980
+  },
+  "route_relevant_recall": 0.8218993812214151,
+  "pool_relevant_recall": 0.7058111380145279,
+  "timing": {
+    "median_ms": 37.06544750093599,
+    "p95_ms": 77.5195282520144,
+    "mean_ms": 42.984617078659895,
+    "qps": 23.264136520514896,
+    "avg_candidate_docs": 95025.36577325498
+  }
+}

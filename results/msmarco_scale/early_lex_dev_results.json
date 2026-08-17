@@ -1,0 +1,47 @@
+{
+  "protocol": "shortlist strategy locked on deterministic TRAIN validation; DEV untouched",
+  "selected": {
+    "strategy": "direct early lexical fusion",
+    "eta": 1.0,
+    "P": 2000,
+    "gamma_tail": 0.25,
+    "lambda_M": 0.125,
+    "lambda_lex_final": 4.0,
+    "lambda_sem_final": 0.1,
+    "h": 0
+  },
+  "secondary_validation_fixed_comparator": {
+    "strategy": "quota rescue",
+    "lex_quota": 500
+  },
+  "direct_dev_metrics": {
+    "nDCG@10": 0.17428851897196151,
+    "MRR@10": 0.14018721289853095,
+    "P@10": 0.030186246418338107,
+    "R@10": 0.2901026743075454,
+    "R@100": 0.5043218720152818,
+    "Hit@10": 0.2964183381088825,
+    "Hit@100": 0.5148997134670487,
+    "n_queries": 6980
+  },
+  "quota500_dev_metrics": {
+    "nDCG@10": 0.17478958836348163,
+    "MRR@10": 0.14076209805794332,
+    "P@10": 0.03022922636103152,
+    "R@10": 0.2903175740210124,
+    "R@100": 0.507043935052531,
+    "Hit@10": 0.2967048710601719,
+    "Hit@100": 0.5173352435530086,
+    "n_queries": 6980
+  },
+  "route_relevant_recall": 0.8218993812214151,
+  "direct_pool_relevant_recall": 0.7058111380145279,
+  "quota_pool_relevant_recall": 0.7202044659671778,
+  "direct_timing": {
+    "median_ms": 37.90266900068673,
+    "p95_ms": 81.34407640027347,
+    "mean_ms": 44.10531592690188,
+    "qps": 22.673003899515287,
+    "avg_candidate_docs": 95025.36577325498
+  }
+}

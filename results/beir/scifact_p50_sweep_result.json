@@ -1,0 +1,44 @@
+{
+  "dataset": "SciFact",
+  "P": 50,
+  "branch_quality": "mean top-3 E_dj among P pool docs; E_dj=m_dj*rho_q(j)*L_dj*C_dj^gamma",
+  "selection": "top-10 branches by H_j; soft document diversity lambda_D=0.1; IDF^2 final lexical term",
+  "timing": {
+    "prepare_median_ms": 6.916647000025478,
+    "prepare_p95_ms": 9.987326550071888
+  },
+  "variants": {
+    "current_z": {
+      "P@10": 0.07266666666666666,
+      "R@10": 0.6563333333333332,
+      "Hit@10": 0.6733333333333333,
+      "P@100": 0.008000000000000002,
+      "R@100": 0.7064444444444444,
+      "Hit@100": 0.72,
+      "MRR@10": 0.5405489417989418,
+      "nDCG@10": 0.5630407091468883,
+      "n_queries": 300.0,
+      "route_recall_micro": 0.7817109144542773,
+      "pool_recall_micro": 0.7079646017699115,
+      "avg_candidates": 156.75333333333333,
+      "rank_median_ms": 0.003697500005728216,
+      "rank_p95_ms": 0.004394999928081234
+    },
+    "hq10_softdoc_l0.1": {
+      "P@10": 0.07266666666666666,
+      "R@10": 0.6563333333333332,
+      "Hit@10": 0.6733333333333333,
+      "P@100": 0.008000000000000002,
+      "R@100": 0.7064444444444444,
+      "Hit@100": 0.72,
+      "MRR@10": 0.5405198412698413,
+      "nDCG@10": 0.5628440203177064,
+      "n_queries": 300.0,
+      "route_recall_micro": 0.7817109144542773,
+      "pool_recall_micro": 0.7079646017699115,
+      "avg_candidates": 156.75333333333333,
+      "rank_median_ms": 0.7425409999086696,
+      "rank_p95_ms": 0.809893949826801
+    }
+  }
+}

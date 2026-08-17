@@ -1,0 +1,37 @@
+{
+  "protocol": "IDF^2 final lexical rule selected robustly on five disjoint 1000-query TRAIN folds; untouched full DEV",
+  "params": {
+    "preselection_eta": 1.0,
+    "preselection_lexical_idf_power": 1.0,
+    "preselection_length_b": 0.2,
+    "P": 2000,
+    "gamma_tail": 0.25,
+    "lambda_M": 0.125,
+    "final_lexical_idf_power": 2.0,
+    "final_length_b": 0.1,
+    "coordination_alpha": 0.25,
+    "lambda_lex": 4.0,
+    "lambda_sem": 0.3,
+    "h": 0,
+    "S": 16
+  },
+  "dev_metrics": {
+    "nDCG@10": 0.1800468441369344,
+    "MRR@10": 0.14521706008095694,
+    "P@10": 0.031017191977077363,
+    "R@10": 0.29814947468958924,
+    "R@100": 0.5191380133715378,
+    "Hit@10": 0.30472779369627506,
+    "Hit@100": 0.5296561604584528,
+    "n_queries": 6980
+  },
+  "route_relevant_recall": 0.8218993812214151,
+  "pool_relevant_recall": 0.7058111380145279,
+  "timing": {
+    "median_ms": 37.31188149868103,
+    "p95_ms": 80.73717710176423,
+    "mean_ms": 43.64869377392529,
+    "qps": 22.91019303302443,
+    "avg_candidate_docs": 95025.36577325498
+  }
+}

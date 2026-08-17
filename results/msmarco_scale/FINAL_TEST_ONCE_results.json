@@ -1,0 +1,41 @@
+{
+  "protocol": "FINAL TEST ONCE after TRAIN-only five-fold lock; no test tuning",
+  "frozen_params": {
+    "preselection_eta": 1.0,
+    "preselection_idf_power": 1.0,
+    "P": 2000,
+    "gamma_tail": 0.25,
+    "lambda_M": 0.125,
+    "final_idf_power": 2.0,
+    "final_length_b": 0.1,
+    "coordination_alpha": 0.25,
+    "lambda_lex": 4.0,
+    "lambda_sem": 0.3,
+    "rare_topk": 3,
+    "rare_coverage_weight": 1.0,
+    "h": 0,
+    "S": 16
+  },
+  "test_metrics": {
+    "nDCG@10": 0.35912864519537124,
+    "nDCG@10_expGain_diag": 0.2966994153329123,
+    "MRR@10": 0.7031007751937984,
+    "P@10": 0.47441860465116276,
+    "R@10": 0.07949015028419686,
+    "R@100": 0.31286757199290977,
+    "Hit@10": 0.813953488372093,
+    "Hit@100": 0.8604651162790697,
+    "n_queries": 43
+  },
+  "route_relevant_recall": 0.7374451487079473,
+  "pool_relevant_recall": 0.5465626523647001,
+  "timing": {
+    "median_ms": 90.73031499792705,
+    "p95_ms": 178.19277350026823,
+    "mean_ms": 96.65727479084528,
+    "qps": 10.345832759757398,
+    "avg_candidate_docs": 86049.18604651163
+  },
+  "n_positive_judgments": 4102,
+  "note": "nDCG@10 uses linear graded gain, matching trec_eval/BEIR convention; exponential-gain value retained only as diagnostic."
+}

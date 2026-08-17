@@ -1,0 +1,34 @@
+{
+  "protocol": "structural final rule locked entirely on deterministic 1000 TRAIN validation; untouched full DEV",
+  "params": {
+    "preselection_eta": 1.0,
+    "P": 2000,
+    "gamma_tail": 0.25,
+    "lambda_M": 0.125,
+    "final_length_b": 0.1,
+    "coordination_alpha": 0.25,
+    "lambda_lex": 4.0,
+    "lambda_sem": 0.3,
+    "h": 0,
+    "S": 16
+  },
+  "dev_metrics": {
+    "nDCG@10": 0.17509258179833653,
+    "MRR@10": 0.14119257970619,
+    "P@10": 0.030186246418338107,
+    "R@10": 0.29015042979942696,
+    "R@100": 0.4997134670487106,
+    "Hit@10": 0.2962750716332378,
+    "Hit@100": 0.510458452722063,
+    "n_queries": 6980
+  },
+  "route_relevant_recall": 0.8218993812214151,
+  "pool_relevant_recall": 0.7058111380145279,
+  "timing": {
+    "median_ms": 39.211250499647576,
+    "p95_ms": 85.6471782998596,
+    "mean_ms": 45.933427947564425,
+    "qps": 21.77063730452593,
+    "avg_candidate_docs": 95025.36577325498
+  }
+}

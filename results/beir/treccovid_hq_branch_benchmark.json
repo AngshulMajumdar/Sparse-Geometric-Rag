@@ -1,0 +1,70 @@
+{
+  "dataset": "TREC-COVID",
+  "branch_quality": "H_j = mean of the top 3 branch-specific evidences E_dj among P=2000 candidates, with E_dj = m_dj * rho_q(j) * L_dj(q) * C_dj(q)^gamma",
+  "selection": "rank 1 by frozen z-normalized relevance; for ranks 2-10, only branches in the top-10 by H_j can receive the central-deviation bonus; repeated branches remain allowed; lambda_D=0.1",
+  "baselines": {
+    "Exact TF-IDF": {
+      "nDCG@10": 0.3737849819,
+      "MRR@10": 0.591468254,
+      "P@10": 0.402,
+      "R@10": 0.0105292984,
+      "R@100": 0.0767184007,
+      "median_ms": 50.1855
+    },
+    "BM25 local": {
+      "nDCG@10": 0.5742822113,
+      "MRR@10": 0.7593333333,
+      "P@10": 0.636,
+      "R@10": 0.015758382,
+      "R@100": 0.0944784373,
+      "median_ms": 4.9123
+    },
+    "Contriever + FAISS": {
+      "nDCG@10": 0.596,
+      "R@100": 0.091
+    },
+    "SPLADE++": {
+      "nDCG@10": 0.727,
+      "R@100": 0.128
+    },
+    "BGE-base + FAISS Flat": {
+      "nDCG@10": 0.781,
+      "R@100": 0.141
+    },
+    "Modern ColBERT": {
+      "nDCG@10": 0.834,
+      "MRR@10": 0.953,
+      "P@10": 0.882,
+      "R@100": 0.161
+    },
+    "Previous OURS": {
+      "nDCG@10": 0.502,
+      "MRR@10": 0.744,
+      "P@10": 0.538,
+      "R@10": 0.01345,
+      "R@100": 0.109,
+      "median_ms": 6.24,
+      "p95_ms": 8.78
+    },
+    "Current frozen z scorer": {
+      "nDCG@10": 0.5502186334,
+      "MRR@10": 0.765,
+      "P@10": 0.602,
+      "R@10": 0.0151011572,
+      "R@100": 0.0995648433
+    },
+    "HQ-branch diversity (top10 H, lambda=0.1)": {
+      "nDCG@10": 0.553080998,
+      "MRR@10": 0.7772222222,
+      "P@10": 0.608,
+      "R@10": 0.015437063,
+      "R@100": 0.0995648433
+    }
+  },
+  "diagnostics": {
+    "route_recall_micro": 0.570380578,
+    "pool_recall_micro": 0.3781461517,
+    "avg_candidates": 17575.12
+  },
+  "note": "The diagnostic Python implementation of the sequential branch-aware selector is not optimized; measured selection overhead should not be used as a production latency comparison."
+}
